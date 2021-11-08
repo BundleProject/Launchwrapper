@@ -3,7 +3,7 @@ package org.bundleproject.launchwrapper
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import io.ktor.client.request.*
-import org.bundleproject.launchwrapper.github.json.GithubReleases
+import org.bundleproject.launchwrapper.json.github.GithubReleases
 import org.bundleproject.launchwrapper.utils.*
 import java.io.File
 

@@ -1,4 +1,4 @@
-package org.bundleproject.launchwrapper.github.json
+package org.bundleproject.launchwrapper.json.github
 
 import com.google.gson.annotations.SerializedName
 
