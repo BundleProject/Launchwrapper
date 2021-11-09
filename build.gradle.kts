@@ -1,9 +1,10 @@
 plugins {
     kotlin("jvm") version "1.5.31"
+    `maven-publish`
 }
 
 group = "org.bundleproject"
-version = "0.1"
+version = "0.1.1"
 
 repositories {
     mavenCentral()
