@@ -1,5 +1,5 @@
 <configuration>
-    <timestamp key="byDay" datePattern="YYYY.MM.dd-HH-mm-ss"/>
+    <timestamp key="byDay" datePattern="YYYY.MM.dd-HH-mm"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -8,7 +8,7 @@
     </appender>
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <file>logs/bundle-${byDay}.log</file>
-        <append>false</append>
+        <append>true</append>
         <encoder>
             <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
