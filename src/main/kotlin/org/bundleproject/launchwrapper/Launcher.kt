@@ -1,10 +1,10 @@
 package org.bundleproject.launchwrapper
 
 import org.bundleproject.launchwrapper.utils.*
+import org.bundleproject.libversion.Version
 import java.io.File
 import kotlin.reflect.KClass
 import kotlin.reflect.full.callSuspend
-import kotlin.reflect.full.createType
 import kotlin.reflect.full.functions
 import kotlin.reflect.full.primaryConstructor
 
@@ -21,6 +21,7 @@ suspend fun launch(args: Array<String>, gameDir: File, classLoader: ClassLoader)
     (args["bundleMainClass"]?.let { Class.forName(it).kotlin } ?: findEntrypoint())?.run {
         val version = args["version"]
             ?.takeIf { it != "MultiMC5" }
+            ?.let(Version::of)
         val modFolderName = "mods"
 
         val bundleClass = runCatching { Class.forName(bundleClassName, true, classLoader).kotlin }
@@ -31,8 +32,8 @@ suspend fun launch(args: Array<String>, gameDir: File, classLoader: ClassLoader)
             .getOrThrow()
 
         logger.info("Invoking constructor...")
-        bundleClass.constructors.find { it.typeParameters[1] == String::class.createType() }
-            ?.call(gameDir, version, modFolderName)
+        bundleClass.primaryConstructor?.call(gameDir, version, modFolderName)
+            ?: logger.error("Couldn't invoke constructor!")
 
         logger.info("Starting Bundle... Goodbye, Launchwrapper...")
         bundleClass.functions.find { it.name == "start" }?.callSuspend()
