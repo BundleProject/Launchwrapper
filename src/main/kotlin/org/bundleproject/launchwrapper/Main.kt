@@ -2,15 +2,19 @@ package org.bundleproject.launchwrapper
 
 import java.io.File
 import org.bundleproject.launchwrapper.utils.get
-import org.bundleproject.launchwrapper.utils.info
+import org.bundleproject.launchwrapper.utils.logger
 
 suspend fun main(args: Array<String>) {
-    val gameDir = File(args["gameDir"] ?: ".")
+    try {
+        val gameDir = File(args["gameDir"] ?: ".")
 
-    info("Updating...")
-    val version = update(gameDir)
-    info("Loading...")
-    val classLoader = load(gameDir, version)
-    info("Launching...")
-    launch(args, gameDir, classLoader)
+        logger.info("Updating...")
+        val version = update(gameDir)
+        logger.info("Loading...")
+        val classLoader = load(gameDir, version)
+        logger.info("Launching...")
+        launch(args, gameDir, classLoader)
+    } catch (e: Throwable) {
+        logger.error(e) { "Failed to launch Bundle!" }
+    }
 }

@@ -1,9 +1,6 @@
 package org.bundleproject.launchwrapper
 
-import org.bundleproject.launchwrapper.utils.bundleClassName
-import org.bundleproject.launchwrapper.utils.err
-import org.bundleproject.launchwrapper.utils.get
-import org.bundleproject.launchwrapper.utils.info
+import org.bundleproject.launchwrapper.utils.*
 import java.io.File
 import kotlin.reflect.KClass
 import kotlin.reflect.full.callSuspend
@@ -28,22 +25,22 @@ suspend fun launch(args: Array<String>, gameDir: File, classLoader: ClassLoader)
 
         val bundleClass = runCatching { Class.forName(bundleClassName, true, classLoader).kotlin }
             .onFailure {
-                err("Bundle is not in the classpath! Cannot launch bundle!")
+                logger.error(it) { "Bundle is not in the classpath! Cannot launch bundle!" }
                 return@launch
             }
             .getOrThrow()
 
-        info("Invoking constructor...")
+        logger.info("Invoking constructor...")
         bundleClass.constructors.find { it.typeParameters[1] == String::class.createType() }
             ?.call(gameDir, version, modFolderName)
 
-        info("Starting Bundle... Goodbye, Launchwrapper...")
+        logger.info("Starting Bundle... Goodbye, Launchwrapper...")
         bundleClass.functions.find { it.name == "start" }?.callSuspend()
     }
 }
 
 private fun findEntrypoint(): KClass<*>? {
-    err("Relying on fallback entrypoint! Please re-install bundle!")
+    logger.warn("Relying on fallback entrypoint! Please re-install bundle!")
     fallbackEntrypoints.forEach {
         runCatching { Class.forName(it) }
             .onSuccess { return it.kotlin }

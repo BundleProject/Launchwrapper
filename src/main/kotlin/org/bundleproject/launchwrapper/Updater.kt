@@ -12,7 +12,7 @@ suspend fun update(gameDir: File): String {
     val jarsFolder = File(bundleFolder, "jars")
     jarsFolder.mkdirs()
 
-    info("Fetching latest version from github...")
+    logger.info("Fetching latest version from github...")
     val latestRelease = http.get<GithubReleases>("$githubApi/repos/BundleProject/Bundle/releases")
         .firstOrNull()
     val latestTagName = latestRelease?.tagName
@@ -23,27 +23,27 @@ suspend fun update(gameDir: File): String {
     val versionFile = File(bundleFolder, "version.json")
 
     if (latestDownloadUrl != null && latestTagName != null) {
-        info("Found latest version: $latestTagName")
+        logger.info("Found latest version: $latestTagName")
 
         val latestJar = File(jarsFolder, "bundle-$latestTagName.jar")
 
         if (!latestJar.exists()) {
-            important("Downloading Bundle update...")
+            logger.info("Downloading Bundle update...")
             http.downloadFile(latestJar, latestDownloadUrl)
 
-            info("Writing latest version to json...")
+            logger.info("Writing latest version to json...")
             val json = JsonObject()
             json.addProperty("latest_version", latestTagName)
 
             versionFile.writeText(gson.toJson(json))
         } else {
-            important("Bundle is already up to date!")
+            logger.info("Bundle is already up to date!")
         }
 
         return latestTagName
     }
 
-    err("Failed to fetch latest release! Returning current latest version to continue safely.")
+    logger.error("Failed to fetch latest release! Returning current latest version to continue safely.")
     return versionFile.readText().let {
         gson.fromJson(it, JsonObject::class.java).get("latest_version").asString
     }

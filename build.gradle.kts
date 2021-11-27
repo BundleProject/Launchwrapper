@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.5.31"
+    kotlin("jvm") version "1.6.0"
     id("com.github.johnrengelman.shadow") version "7.1.0"
     `maven-publish`
 }
@@ -13,13 +13,17 @@ repositories {
 
 dependencies {
     val ktorVersion: String by project
+    val kotlinVersion: String by project
 
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.31")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.31")
+    implementation(kotlin("stdlib-jdk8", kotlinVersion))
+    implementation(kotlin("reflect", kotlinVersion))
 
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-apache:$ktorVersion")
     implementation("io.ktor:ktor-client-gson:$ktorVersion")
+
+    implementation("io.github.microutils:kotlin-logging-jvm:2.1.0")
+    implementation("ch.qos.logback:logback-classic:1.2.7")
 }
 
 tasks {
